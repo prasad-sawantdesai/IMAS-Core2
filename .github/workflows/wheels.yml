@@ -19,7 +19,11 @@ jobs:
             cibw_platform: linux
             cibw_archs: x86_64
             platform_id: manylinux_x86_64
-            manylinux_image: quay.io/pypa/manylinux_2_28_x86_64
+            # Use manylinux2014 (CentOS 7) for maximum compatibility
+            # - Works on 90%+ of Linux systems
+            # - Avoids "too-recent versioned symbols" errors
+            # - Recommended by PyPA
+            manylinux_image: quay.io/pypa/manylinux2014_x86_64
             AL_BACKEND_HDF5: AL_BACKEND_HDF5=ON
             AL_BACKEND_MDSPLUS: AL_BACKEND_MDSPLUS=OFF
             AL_BACKEND_UDA: AL_BACKEND_UDA=ON
