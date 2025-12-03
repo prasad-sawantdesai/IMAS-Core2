@@ -9,6 +9,9 @@ set( DD_VERSION "main" CACHE STRING "Data dictionary version (tag or branch name
 
 # Load common assets
 ################################################################################
+# Set al-core_SOURCE_DIR to the root of the repository
+# This is needed for git describe commands and xsltproc.py path
+set( al-core_SOURCE_DIR "${CMAKE_CURRENT_SOURCE_DIR}/../.." )
 add_subdirectory( "${CMAKE_CURRENT_SOURCE_DIR}/../../common" _common )
 
 project( al-models-mdsplus )
