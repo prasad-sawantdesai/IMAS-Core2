@@ -1,0 +1,165 @@
+================================================================================
+IMAS-Core Windows Installation - Manual Command List
+================================================================================
+
+This file contains the step-by-step commands to manually install IMAS-Core
+on Windows. These commands should be executed in PowerShell.
+
+PREREQUISITES:
+- Git installed and in PATH
+- Visual Studio 2019 or 2022 with C++ development tools
+- CMake (can be from Visual Studio or standalone)
+
+================================================================================
+STEP 1: Create Workspace and Clone vcpkg
+================================================================================
+
+# Create workspace directory
+mkdir imas_workspace
+cd .\imas_workspace\
+
+# Clone vcpkg
+git clone https://github.com/microsoft/vcpkg.git
+cd .\vcpkg\
+
+# Bootstrap vcpkg
+.\bootstrap-vcpkg.bat
+
+# Return to workspace
+cd ..
+
+================================================================================
+STEP 2: Clone IMAS-Core Repository
+================================================================================
+
+# Clone IMAS-Core
+git clone https://github.com/iterorganization/IMAS-Core.git
+cd .\IMAS-Core\
+
+# Checkout develop branch
+git checkout develop
+
+================================================================================
+STEP 3: Set Environment Variables
+================================================================================
+
+# Set VCPKG_ROOT (adjust path to match your username/location)
+$env:VCPKG_ROOT = "C:\Users\YourUsername\imas_workspace\vcpkg"
+
+# Add vcpkg to PATH
+$env:PATH += ";C:\Users\YourUsername\imas_workspace\vcpkg"
+
+# Optional: Add Visual Studio CMake to PATH (if not already in PATH)
+# Adjust version number (2022, 2019) and edition (Community, Professional, Enterprise)
+$env:PATH += ";C:\Program Files\Microsoft Visual Studio\2022\Community\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin"
+
+# Optional: Add MSVC compiler to PATH (if needed)
+# Find your MSVC version by checking:
+# dir "C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\"
+# Then add the appropriate bin directory:
+$env:PATH += ";C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.XX.XXXXX\bin\Hostx64\x64"
+
+================================================================================
+STEP 4: Configure CMake
+================================================================================
+
+# Configure the build with CMake
+# Replace "C:\Users\YourUsername" with your actual paths
+
+cmake -Bbuild -S . `
+  -DVCPKG=ON `
+  -DAL_PYTHON_BINDINGS=ON `
+  -DCMAKE_INSTALL_PREFIX="C:\Users\YourUsername\imas-install" `
+  -DCMAKE_TOOLCHAIN_FILE="C:\Users\YourUsername\imas_workspace\vcpkg\scripts\buildsystems\vcpkg.cmake"
+
+# Note: If configuration fails, you may need to remove the build directory first:
+# rmdir build
+
+================================================================================
+STEP 5: Build and Install
+================================================================================
+
+# Build and install IMAS-Core
+cmake --build build --target install
+
+================================================================================
+STEP 6: Update (Optional - for future updates)
+================================================================================
+
+# Navigate to IMAS-Core directory
+cd C:\Users\YourUsername\imas_workspace\IMAS-Core
+
+# Pull latest changes
+git checkout develop
+git pull
+
+# Rebuild
+cmake --build build --target install
+
+================================================================================
+COMMON PATHS TO CUSTOMIZE:
+================================================================================
+
+Replace these paths with your actual paths:
+
+1. Workspace location:
+   C:\Users\YourUsername\imas_workspace
+   
+2. Installation prefix:
+   C:\Users\YourUsername\imas-install
+   
+3. Visual Studio path (check your installation):
+   C:\Program Files\Microsoft Visual Studio\2022\Community
+   (or 2019, Professional, Enterprise)
+   
+4. MSVC version (find yours in VC\Tools\MSVC\):
+   14.44.35207 (example - yours will be different)
+
+================================================================================
+TROUBLESHOOTING:
+================================================================================
+
+1. If CMake is not found:
+   - Install CMake from cmake.org, OR
+   - Use Visual Studio's CMake (add to PATH as shown in Step 3)
+
+2. If vcpkg bootstrap fails:
+   - Ensure you have Visual Studio C++ tools installed
+   - Run from an Administrator PowerShell if needed
+
+3. If CMake configuration fails:
+   - Verify all paths are correct
+   - Remove build directory: rmdir build
+   - Try again
+
+4. If build fails:
+   - Check that vcpkg dependencies installed correctly
+   - Review error messages for missing dependencies
+   - Ensure sufficient disk space
+
+5. To verify installations:
+   cmake --version
+   git --version
+   .\vcpkg\vcpkg.exe version
+
+================================================================================
+QUICK REFERENCE - Minimal Command Sequence
+================================================================================
+
+# One-liner setup (adjust paths!)
+mkdir imas_workspace; cd imas_workspace; `
+git clone https://github.com/microsoft/vcpkg.git; cd vcpkg; .\bootstrap-vcpkg.bat; cd ..; `
+git clone https://github.com/iterorganization/IMAS-Core.git; cd IMAS-Core; git checkout develop
+
+# Set environment
+$env:VCPKG_ROOT = "C:\Users\YourUsername\imas_workspace\vcpkg"
+
+# Configure and build
+cmake -Bbuild -S . -DVCPKG=ON -DAL_PYTHON_BINDINGS=ON `
+  -DCMAKE_INSTALL_PREFIX="C:\Users\YourUsername\imas-install" `
+  -DCMAKE_TOOLCHAIN_FILE="$env:VCPKG_ROOT\scripts\buildsystems\vcpkg.cmake"
+
+cmake --build build --target install
+
+================================================================================
+
